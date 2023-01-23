@@ -537,3 +537,19 @@ void
 hello(void) {
   cprintf("\n\n Hello from your kernel space! \n\n");
 }
+
+void
+getparents(void) {
+  struct proc *curproc = myproc();
+  cprintf("\ncurrent process pid: %d", curproc->pid);
+  cprintf("\n");
+
+  // curproc->parent returns the parent pointer, get the pid of them
+  while (curproc->parent) {
+    cprintf("\n");
+    cprintf("parent pid of the previous process %d", curproc->parent->pid);
+    curproc = curproc->parent;
+  }
+
+  cprintf("\n\nDone running!\n\n");
+}
