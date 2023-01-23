@@ -4,5 +4,5 @@
 
 int main(int argc, char *argv[]) {
     getparents();
-    exit();
+    exit(0);
 }
