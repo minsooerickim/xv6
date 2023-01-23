@@ -16,7 +16,11 @@ sys_fork(void)
 int
 sys_exit(void)
 {
-  exit();
+  int exitstatus;
+
+  argint(0, &exitstatus);
+  exit(exitstatus);
+
   return 0;  // not reached
 }
 
