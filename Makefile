@@ -182,8 +182,6 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_test\
-	_getparents\
-	_waitpid\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
