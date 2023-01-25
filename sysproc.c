@@ -109,3 +109,17 @@ sys_getparents(void) {
   getparents();
   return 0;
 }
+
+int
+sys_waitpid(void) {
+  int pid;
+  argint(0, &pid);
+
+  int *status;
+  argptr(0, (void*)&status, sizeof(status));
+
+  int options;
+  argint(2, &options);
+
+  return waitpid(pid, status, options);
+}

@@ -559,9 +559,59 @@ getparents(void) {
   // curproc->parent returns the parent pointer, get the pid of them
   while (curproc->parent) {
     cprintf("\n");
-    cprintf("parent pid of the previous process %d", curproc->parent->pid);
+    cprintf("parent process name of, %s, with pid of the previous process %d", curproc->parent->name, curproc->parent->pid);
     curproc = curproc->parent;
   }
 
   cprintf("\n\nDone running!\n\n");
+}
+
+int 
+waitpid(int pid, int *status, int options) {
+  struct proc *p;
+  struct proc *curproc = myproc();
+  
+  acquire(&ptable.lock);
+  for(;;){
+    // flag to indicate whether target pid was found
+    int foundpid = 0;
+
+    // Scan through table looking for exited children.
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      // continue if target pid isn't matched
+      if (p->pid != pid) { continue; }
+
+      // target pid was found
+      foundpid = 1;
+      if(p->state == ZOMBIE){
+        kfree(p->kstack);
+        p->kstack = 0;
+        freevm(p->pgdir);
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+        release(&ptable.lock);
+
+        // update parent/curr proc exitstatus if status is non-null
+        if (status) {
+          *status = p->exitstatus;
+        }
+        // update child process exitstatus
+        p->exitstatus = 0;
+
+        return pid;
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!foundpid || curproc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+  }
 }

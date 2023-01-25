@@ -5,31 +5,22 @@
 
 int main(int argc, char *argv[])
 {
-	int getParent(void);
+	
 	int exitWait(void);
 	int waitPid(void);
 
   printf(1, "\n This program tests the correctness of your lab#1\n");
   
   if (atoi(argv[1]) == 1)
-    getParent();
+	exitWait();
   else if (atoi(argv[1]) == 2)
-	  waitPid();
-  else if (atoi(argv[1]) == 3)
-    exitWait();  
+	waitPid();
   else 
-    printf(1, "\ntype \"%s 1\" to test getparent, \"%s 2\" to test waitpid\n, \"%s 3\" to test exit and wait\n", argv[0], argv[0], argv[0]);
+   printf(1, "\ntype \"%s 1\" to test exit and wait, \"%s 2\" to test waitpid\n", argv[0], argv[0]);
+  
     // End of test
 	 exit(0);
 	 return 0;
- }
-
-
- int getParent(void) {
-    printf(1, "\nYou need to print the pids in your system call\n");
-    printf(1, "\n an example \n current proc name test\n parent name sh, pid 2\n parent name init, pid 1\n");
-    getparents();
-    return 0;
  }
   
 int exitWait(void) {
