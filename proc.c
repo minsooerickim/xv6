@@ -570,11 +570,12 @@ int
 waitpid(int pid, int *status, int options) {
   struct proc *p;
   struct proc *curproc = myproc();
-  
+  int foundpid;
+
   acquire(&ptable.lock);
   for(;;){
     // flag to indicate whether target pid was found
-    int foundpid = 0;
+    foundpid = 0;
 
     // Scan through table looking for exited children.
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -584,6 +585,12 @@ waitpid(int pid, int *status, int options) {
       // target pid was found
       foundpid = 1;
       if(p->state == ZOMBIE){
+        // update parent/curr proc exitstatus if status is non-null
+        if (status) {
+          *status = p->exitstatus;
+        }
+        cprintf("exit status - %d", *status);
+        pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
         freevm(p->pgdir);
@@ -593,13 +600,6 @@ waitpid(int pid, int *status, int options) {
         p->killed = 0;
         p->state = UNUSED;
         release(&ptable.lock);
-
-        // update parent/curr proc exitstatus if status is non-null
-        if (status) {
-          *status = p->exitstatus;
-        }
-        // update child process exitstatus
-        p->exitstatus = 0;
 
         return pid;
       }
