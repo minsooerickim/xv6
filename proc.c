@@ -589,7 +589,6 @@ waitpid(int pid, int *status, int options) {
         if (status) {
           *status = p->exitstatus;
         }
-        cprintf("exit status - %d", *status);
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;

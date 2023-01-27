@@ -116,7 +116,7 @@ sys_waitpid(void) {
   argint(0, &pid);
 
   int *status;
-  argptr(0, (void*)&status, sizeof(status));
+  argptr(1, (void*)&status, sizeof(status));
 
   int options;
   argint(2, &options);
