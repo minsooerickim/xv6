@@ -603,6 +603,9 @@ waitpid(int pid, int *status, int options) {
         return pid;
       }
     }
+    if (options == 1) {
+      release(&ptable.lock);
+    }
 
     // No point waiting if we don't have any children.
     if(!foundpid || curproc->killed){
